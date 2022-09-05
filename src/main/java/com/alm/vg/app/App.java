@@ -1,13 +1,13 @@
-package com.mycompany.app;
+package com.alm.vg.app;
 
 import java.util.Scanner;
 
 public class App {
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         int value1;
         int value2;
-        while(true) {
+        while (true) {
             try {
                 System.out.println("Enter first value: ");
                 value1 = parseInput(takeInput());
