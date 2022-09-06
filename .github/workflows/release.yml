@@ -83,7 +83,7 @@ jobs:
       - name: "Deploy to Azure Container Instances"
         uses: "azure/aci-deploy@v1"
         with:
-          resource-group: demo-java
+          resource-group: java-alm
           image: ${{needs.build-and-push-image.outputs.tags}}
           cpu: 1 #Optional
           memory: 1 #Optional
