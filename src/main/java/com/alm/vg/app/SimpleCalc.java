@@ -7,54 +7,98 @@ import com.alm.vg.app.Operations.Operation;
 public class SimpleCalc {
     private int value1;
     private int value2;
-    private State state = State.INPUT;
-    private Operation operation = Operation.ADDITION;
 
-    private enum State {
-        INPUT, OPERATION, RESULT
+    private int result;
+
+    private State state = State.INPUT_ONE;
+    private State previous = State.INPUT_ONE;
+
+    private Operation operation = Operation.ADDITION;
+    private final Scanner scanner = new Scanner(System.in);
+    private boolean running = true;
+
+    protected enum State {
+        INPUT_ONE, INPUT_TWO, OPERATION, RESULT, ERROR, PRINT
+    }
+
+    public int getValue1() {
+        return value1;
+    }
+
+    public int getValue2() {
+        return value2;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Operation getOperation() {
+        return operation;
     }
 
     public void run() {
         System.out.println("Welcome to a simple calculator...");
         System.out.println("Q to quit");
-        while (true) {
+        while (running) {
             switch (state) {
-                case INPUT -> request();
-                case OPERATION -> chooseOperation();
-                case RESULT -> System.out.println("Total: " + calculateResult());
+                case INPUT_ONE -> {
+                    System.out.print("Enter value1: ");
+                    value1 = request(takeInput());
+                    state = State.INPUT_TWO;
+                }
+                case INPUT_TWO -> {
+                    System.out.print("Enter value2: ");
+                    value2 = request(takeInput());
+                    state = State.OPERATION;
+                }
+                case OPERATION -> {
+                    System.out.println("Enter the operation of choice");
+                    System.out.println("1) Addition");
+                    System.out.println("2) Subtraction");
+                    chooseOperation(takeInput());
+                }
+                case RESULT -> result = calculateResult();
+                case PRINT -> {
+                    System.out.println("Operation result: " + result);
+                    state = State.INPUT_ONE;
+                }
+                case ERROR -> {
+                    System.out.println("Invalid value (Q to quit)");
+                    state = previous;
+                }
             }
         }
     }
 
-    private void request() {
+    protected int request(String input) {
         try {
-            System.out.print("Enter first value: ");
-            value1 = parseInput(takeInput());
-            System.out.print("Enter second value: ");
-            value2 = parseInput(takeInput());
+            int value = parseInput(input);
             state = State.OPERATION;
+            return value;
         } catch (NumberFormatException e) {
-            System.out.println("Stick to numbers!");
-            System.out.println("Q to quit");
+            previous = state;
+            state = State.ERROR;
+            return 0;
         }
     }
 
     private String takeInput() {
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
     private int parseInput(String input) throws NumberFormatException {
         if (input.equalsIgnoreCase("q"))
-            System.exit(0);
+            running = false;
         return Integer.parseInt(input);
     }
 
-    private void chooseOperation() {
-        System.out.println("Enter the operation of choice");
-        System.out.println("1) Addition");
-        System.out.println("2) Subtraction");
-        switch (takeInput()) {
+    protected void chooseOperation(String input) {
+        switch (input.toLowerCase()) {
             case "1" -> {
                 operation = Operation.ADDITION;
                 state = State.RESULT;
@@ -63,17 +107,21 @@ public class SimpleCalc {
                 operation = Operation.SUBTRACTION;
                 state = State.RESULT;
             }
-            default -> System.out.println("Invalid value (Q to quit)");
+            case "q" -> running = false;
+            default -> {
+                previous = state;
+                state = State.ERROR;
+            }
         }
     }
 
-    private int calculateResult() {
+    protected int calculateResult() {
         int result = 0;
         switch (operation) {
             case ADDITION -> result = Operations.add(value1, value2);
             case SUBTRACTION -> result = Operations.subtract(value1, value2);
         }
-        state = State.INPUT;
+        state = State.PRINT;
         return result;
     }
 
