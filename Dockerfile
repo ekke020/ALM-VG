@@ -7,4 +7,4 @@
 FROM eclipse-temurin:18-jre
 WORKDIR /app
 COPY /target/app.jar .
-CMD ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
