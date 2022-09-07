@@ -1,4 +1,4 @@
-name: testing
+name: publish
 
 on:
   push:
@@ -39,12 +39,11 @@ jobs:
 
   docker-image:
     runs-on: ubuntu-latest
-    outputs:
-      tags: ${{ steps.meta.outputs.tags }}
-
     needs:
       - unit-tests
       - integration-tests
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
 
     permissions:
       contents: read
@@ -75,27 +74,27 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-#  azure-deploy:
-#    runs-on: ubuntu-latest
-#    needs:
-#      - integration-tests
-#      - build-and-push-image
-#    steps:
-#      - name: "Login via Azure CLI"
-#        uses: azure/login@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
-#
-#      - run: echo ${{needs.build-and-push-image.outputs.tags}}
-#
-#      - name: "Deploy to Azure Container Instances"
-#        uses: "azure/aci-deploy@v1"
-#        with:
-#          resource-group: java-alm
-#          image: ${{needs.build-and-push-image.outputs.tags}}
-#          cpu: 1 #Optional
-#          memory: 1 #Optional
-#          dns-name-label: java-alm
-#          name: demo-java-alm-cli
-#          location: "Sweden Central"
+  azure-deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+      - integration-tests
+      - docker-image
+
+    steps:
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "Deploy to Azure Container Instances"
+        uses: "azure/aci-deploy@v1"
+        with:
+          resource-group: java-alm
+          image: ${{needs.docker-image.outputs.tags}}
+          cpu: 1 #Optional
+          memory: 1 #Optional
+          dns-name-label: java-alm
+          name: demo-java-alm-cli
+          location: "Sweden Central"
 
