@@ -98,4 +98,5 @@ jobs:
           dns-name-label: java-alm
           name: alm-vg
           location: "Sweden Central"
+          ports: '8080'
 
