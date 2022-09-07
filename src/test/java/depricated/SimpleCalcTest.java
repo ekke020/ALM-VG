@@ -1,5 +1,7 @@
-package com.alm.vg.app;
+package depricated;
 
+import depricated.Operations;
+import depricated.SimpleCalc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

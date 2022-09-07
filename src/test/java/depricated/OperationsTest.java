@@ -1,5 +1,6 @@
-package com.alm.vg.app;
+package depricated;
 
+import depricated.Operations;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,4 +1,4 @@
-package com.alm.vg.app;
+package depricated;
 
 public class Operations {
 
