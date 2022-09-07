@@ -1,8 +1,8 @@
-package com.alm.vg.app;
+package depricated;
 
 import java.util.Scanner;
 
-import com.alm.vg.app.Operations.Operation;
+import depricated.Operations.Operation;
 
 public class SimpleCalc {
     private int value1;
