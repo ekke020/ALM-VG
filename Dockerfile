@@ -1,8 +1,9 @@
 FROM maven:3-openjdk-18-slim AS builder
-WORKDIR /build
+#WORKDIR /build
 COPY src/ .
 COPY pom.xml .
-RUN mvn -f /build/pom.xml clean package -DskipTests=true
+# -f /build/pom.xml
+RUN mvn clean package -DskipTests=true
 
 FROM eclipse-temurin:18-jre
 WORKDIR /app
